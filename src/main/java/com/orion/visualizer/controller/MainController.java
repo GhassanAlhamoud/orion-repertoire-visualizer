@@ -190,7 +190,7 @@ public class MainController {
         task.setOnFailed(e -> {
             setLoading(false);
             updateStatus("Error building tree: " + task.getException().getMessage());
-            e.getStackTrace();
+            task.getException().printStackTrace();
         });
         
         new Thread(task).start();

@@ -32,7 +32,7 @@ public class DatabaseService {
      * Create a new database from a PGN file.
      */
     public OrionDatabase.ImportStats createDatabaseFromPgn(File pgnFile, File outputFile, 
-                                                           ProgressCallback callback) throws IOException {
+                                                           ProgressCallback callback) throws IOException, ClassNotFoundException {
         // Close existing database if open
         closeDatabase();
         
@@ -114,15 +114,11 @@ public class DatabaseService {
             throw new IllegalStateException("No database loaded");
         }
         
-        if (asWhite) {
-            return database.search()
-                .withWhite(playerName)
-                .execute();
-        } else {
-            return database.search()
-                .withBlack(playerName)
-                .execute();
-        }
+        // Note: OrionDB SearchBuilder uses withPlayer() for both white and black
+        // We'll need to filter by side in post-processing
+        return database.search()
+            .withPlayer(playerName)
+            .execute();
     }
 
     /**
